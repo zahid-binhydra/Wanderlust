@@ -3,8 +3,8 @@ const Schema = mongoose.Schema
 
 const listningSchema = new Schema({
     title: {
-       type: String,
-       require: true,
+        type: String,
+        require: true,
     },
     description: String,
     image: {
@@ -21,6 +21,11 @@ const listningSchema = new Schema({
     price: Number,
     location: String,
     country: String,
+    reviews: [{
+        type: Schema.Types.ObjectId,
+        ref: "Review"
+    }
+    ]
 })
 
 const Listing = mongoose.model("Listing", listningSchema)
