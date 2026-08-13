@@ -8,7 +8,7 @@ const ejsMate = require("ejs-mate")
 const wrapAsync = require("./utils/wrapAsync.js")
 const ExpressError = require("./utils/ExpressError.js")
 const { listingSchema, reviewSchema } = require("./schema.js")
-const Reviews = require("./models/review.js")
+const Review = require("./models/review.js")
 
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/Wanderlust"
@@ -112,10 +112,10 @@ app.delete("/listings/:id", wrapAsync(async (req, res) => {
 }))
 
 // Reviews
-// post route
+// post review route
 app.post("/listings/:id/reviews",validateReview, wrapAsync(async(req, res) =>{
     let listing = await Listing.findById(req.params.id)
-    let newReview = new Reviews(req.body.review)
+    let newReview = new Review(req.body.review)
     
     listing.reviews.push(newReview)
 
@@ -125,6 +125,16 @@ app.post("/listings/:id/reviews",validateReview, wrapAsync(async(req, res) =>{
     res.redirect(`/listings/${listing._id}`)
 })
 )
+
+// Delete Review Route
+app.delete("/listings/:id/reviews/:reviewId", wrapAsync(async (req,res) =>{
+    let {id, reviewId} = req.params
+
+    await Listing.findByIdAndUpdate(id, {$pull: {reviews: reviewId}})
+    await Review.findByIdAndDelete(reviewId)
+
+    res.redirect(`/listings/${id}`)
+}))
 
 // app.get("/testlisting", async (req, res) => {
 //     let sampleListing = new Listing({
