@@ -4,6 +4,7 @@ const mapToken = process.env.MAP_TOKEN
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 
+
 module.exports.index = async (req, res) => {
     const allListings = await Listing.find({})
     res.render("listings/index.ejs", { allListings })
@@ -58,17 +59,40 @@ module.exports.editListing = async (req, res) => {
     originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250")
     res.render("listings/edit.ejs", { listing, originalImageUrl })
 }
-
 module.exports.updateListing = async (req, res) => {
     let { id } = req.params
-    let listing = await Listing.findByIdAndUpdate(id, { ...req.body.listing }, { new: true })
+
+    let listing = await Listing.findByIdAndUpdate(
+        id,
+        { ...req.body.listing },
+        { new: true }
+    )
+
+    if (!listing) {
+        req.flash("error", "Listing you requested for does not exist!")
+        return res.redirect("/listings")
+    }
+
+    // Update map coordinates using the listing's location and country
+    if (listing.location && listing.country) {
+        const response = await geocodingClient.forwardGeocode({
+            query: `${listing.location}, ${listing.country}`,
+            limit: 1
+        }).send()
+
+        if (response.body.features.length > 0) {
+            listing.geometry = response.body.features[0].geometry
+        }
+    }
 
     if (typeof req.file !== "undefined") {
         let url = req.file.path
         let filename = req.file.filename
+
         listing.image = { url, filename }
-        await listing.save()
     }
+
+    await listing.save()
 
     req.flash("success", "Listing Updated!")
     res.redirect(`/listings/${id}`)
