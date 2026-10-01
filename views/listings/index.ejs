@@ -12,6 +12,8 @@
         margin-right: 2rem;
         margin-top: 2rem;
         opacity: 0.7;
+        text-decoration: none;
+        color: inherit;
     }
 
     .filter:hover {
@@ -36,77 +38,146 @@
         display: flex;
         align-items: center;
     }
+
+    .filter.active {
+    opacity: 1;
+    color: #fe424d;
+}
+
 </style>
 <body>
     <div id="filters">
-        <div class="filter">
-            <div><i class="fa-solid fa-fire"></i></div>
-            <p>Trending</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-bed"></i></div>
-            <p>Rooms</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-mountain-city"></i></div>
-            <p>Iconic Cities</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-mountain-sun"></i></div>
-            <p>Mountains</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-brands fa-fort-awesome"></i></div>
-            <p>Castels</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-person-swimming"></i></div>
-            <p>Amazing Pools</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-tent-arrow-down-to-line"></i></div>
-            <p>Camping</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-cow"></i></div>
-            <p>Farms</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-person-skiing"></i></div>
-            <p>Arctic</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-landmark-dome"></i></div>
-            <p>Domes</p>
-        </div>
-        <div class="filter">
-            <div><i class="fa-solid fa-ship"></i></div>
-            <p>Boats</p>
-        </div>
-        <div class="tax-toggle">
-            <div class="form-check-reverse form-switch">
-  <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
-  <label class="form-check-label" for="switchCheckDefault">Display total after taxes</label>
-</div>
+
+    <a href="/listings?category=Trending"
+       class="filter <%= category === "Trending" ? "active" : "" %>">
+        <div><i class="fa-solid fa-fire"></i></div>
+        <p>Trending</p>
+    </a>
+
+    <a href="/listings?category=Rooms"
+       class="filter <%= category === "Rooms" ? "active" : "" %>">
+        <div><i class="fa-solid fa-bed"></i></div>
+        <p>Rooms</p>
+    </a>
+
+    <a href="/listings?category=Iconic%20Cities"
+       class="filter <%= category === "Iconic Cities" ? "active" : "" %>">
+        <div><i class="fa-solid fa-mountain-city"></i></div>
+        <p>Iconic Cities</p>
+    </a>
+
+    <a href="/listings?category=Mountains"
+       class="filter <%= category === "Mountains" ? "active" : "" %>">
+        <div><i class="fa-solid fa-mountain-sun"></i></div>
+        <p>Mountains</p>
+    </a>
+
+    <a href="/listings?category=Castles"
+       class="filter <%= category === "Castles" ? "active" : "" %>">
+        <div><i class="fa-brands fa-fort-awesome"></i></div>
+        <p>Castles</p>
+    </a>
+
+    <a href="/listings?category=Amazing%20Pools"
+       class="filter <%= category === "Amazing Pools" ? "active" : "" %>">
+        <div><i class="fa-solid fa-person-swimming"></i></div>
+        <p>Amazing Pools</p>
+    </a>
+
+    <a href="/listings?category=Camping"
+       class="filter <%= category === "Camping" ? "active" : "" %>">
+        <div><i class="fa-solid fa-tent-arrow-down-to-line"></i></div>
+        <p>Camping</p>
+    </a>
+
+    <a href="/listings?category=Farms"
+       class="filter <%= category === "Farms" ? "active" : "" %>">
+        <div><i class="fa-solid fa-cow"></i></div>
+        <p>Farms</p>
+    </a>
+
+    <a href="/listings?category=Arctic"
+       class="filter <%= category === "Arctic" ? "active" : "" %>">
+        <div><i class="fa-solid fa-person-skiing"></i></div>
+        <p>Arctic</p>
+    </a>
+
+    <a href="/listings?category=Domes"
+       class="filter <%= category === "Domes" ? "active" : "" %>">
+        <div><i class="fa-solid fa-landmark-dome"></i></div>
+        <p>Domes</p>
+    </a>
+
+    <a href="/listings?category=Boats"
+       class="filter <%= category === "Boats" ? "active" : "" %>">
+        <div><i class="fa-solid fa-ship"></i></div>
+        <p>Boats</p>
+    </a>
+
+    <div class="tax-toggle">
+        <div class="form-check-reverse form-switch">
+            <input
+                class="form-check-input"
+                type="checkbox"
+                role="switch"
+                id="switchCheckDefault"
+            >
+            <label class="form-check-label" for="switchCheckDefault">
+                Display total after taxes
+            </label>
         </div>
     </div>
+
+</div>
+   <% if (allListings.length === 0) { %>
+
+    <div class="row">
+        <div class="col-12 text-center mt-5">
+            <h3>No listings found</h3>
+            <p>There are no listings in this category yet.</p>
+            <a href="/listings" class="btn btn-dark mt-2">
+                View all listings
+            </a>
+        </div>
+    </div>
+
+<% } else { %>
+
     <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+
         <% for(let listing of allListings) { %>
-    <a href="/listings/<%= listing._id %>" class="listing-link">       
-<div class="card col listing-card">
-  <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_images" style="height: 20rem;">
-  <div class="card-img-overlay"></div>
-  <div class="card-body">
-    <p class="card-text">
-        <b><%= listing.title %></b> <br>
-        &#8377  <%= listing.price.toLocaleString("en-IN") %> /night
-        <i class="tax-info"> &nbsp; &nbsp;+18% GST</i>
-    </p>
-  </div>
-</div>
-</a> 
-<% } %>
+
+            <a href="/listings/<%= listing._id %>" class="listing-link">
+
+                <div class="card col listing-card">
+
+                    <img
+                        src="<%= listing.image.url %>"
+                        class="card-img-top"
+                        alt="listing_images"
+                        style="height: 20rem;"
+                    >
+
+                    <div class="card-img-overlay"></div>
+
+                    <div class="card-body">
+                        <p class="card-text">
+                            <b><%= listing.title %></b>
+                            <br>
+                            &#8377; <%= listing.price.toLocaleString("en-IN") %> /night
+                            <i class="tax-info">&nbsp; &nbsp;+18% GST</i>
+                        </p>
+                    </div>
+
+                </div>
+
+            </a>
+
+        <% } %>
+
     </div>
+
+<% } %>
  
 <script>
     let taxSwitch = document.getElementById("switchCheckDefault")
